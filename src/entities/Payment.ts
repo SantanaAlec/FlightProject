@@ -10,7 +10,7 @@ export class Payment {
     reservation: Reservation;
 
     @Column()
-    ammount: number;
+    amount: number;
 
     @Column()
     paymentDate: Date;

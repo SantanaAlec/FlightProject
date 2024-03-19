@@ -5,7 +5,7 @@ import { PlaneRegisterSuccessDTO } from "../dto/plane/PlaneRegisterSuccessDTO";
 import { PlaneUpdateDTO } from "../dto/plane/PlaneUpdateDTO";
 import { PlaneUpdateSuccessDTO } from "../dto/plane/PlaneUpdateSuccessDTO";
 
-export class PlaneService{
+export class PlaneService {
     private planeRepository: Repository<Plane>;
     constructor(planeRepository: Repository<Plane>) {
         this.planeRepository = planeRepository;
@@ -17,13 +17,7 @@ export class PlaneService{
         const plane = new Plane();
         plane.model = planeRegisterDTO.model;
 
-        let savedPlane: Plane;
-
-        try {
-            savedPlane = await this.planeRepository.save(plane);
-        } catch (error) {
-            throw new Error("Error: " + error);
-        }
+        const savedPlane = await this.planeRepository.save(plane);
 
         const response: PlaneRegisterSuccessDTO = {
             model: savedPlane.model,
@@ -31,7 +25,7 @@ export class PlaneService{
 
         return response;
     }
-    
+
     async getAll(): Promise<Plane[]> {
         return await this.planeRepository.find();
     }
@@ -55,11 +49,7 @@ export class PlaneService{
             plane.model = planeUpdateDTO.model;
         }
 
-        try {
-            await this.planeRepository.save(plane);
-        } catch (error) {
-            throw new Error("Error: " + error);
-        }
+        await this.planeRepository.save(plane);
 
         const response: PlaneUpdateSuccessDTO = {
             model: plane.model,
@@ -69,10 +59,6 @@ export class PlaneService{
     }
 
     async delete(id: number): Promise<DeleteResult> {
-        try {
-            return await this.planeRepository.delete(id);
-        } catch (error) {
-            throw new Error("Error: " + error);
-        }
+        return await this.planeRepository.delete(id);
     }
 }

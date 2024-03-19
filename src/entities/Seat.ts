@@ -6,7 +6,7 @@ import { Reservation } from "./Reservation";
 export enum SeatClass {
     BUSINESS = "BUSINESS",
     ECONOMY = "ECONOMY",
-    FIRST = "FIRST CLASS"
+    FIRST = "FIRSTCLASS"
 }
 
 

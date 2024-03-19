@@ -10,8 +10,12 @@ export class FlightService {
     private flightRepository: Repository<Flight>;
     private planeRepository: Repository<Plane>;
 
-    constructor(flightRepository: Repository<Flight>) {
+    constructor(
+        flightRepository: Repository<Flight>,
+        planeRepository: Repository<Plane>
+    ) {
         this.flightRepository = flightRepository;
+        this.planeRepository = planeRepository;
     }
 
     async register(
@@ -19,28 +23,22 @@ export class FlightService {
     ): Promise<FlightRegisterSuccessDTO> {
         const flight = new Flight();
 
-        let assignedPlane: Plane;
-        try {
-            assignedPlane = await this.planeRepository.findOneBy({
-                id: flightRegisterDTO.planeId,
-            });
-        } catch (error) {
-            throw new Error("Error: " + error);
+        const plane = await this.planeRepository.findOneBy({
+            id: flightRegisterDTO.planeId,
+        });
+
+        if (!plane) {
+            throw new Error("Plane not found");
         }
 
-        flight.plane = assignedPlane;
+        flight.plane = plane;
         flight.origin = flightRegisterDTO.origin;
         flight.destination = flightRegisterDTO.destination;
         flight.departureDate = flightRegisterDTO.departureDate;
         flight.arrivalDate = flightRegisterDTO.arrivalDate;
         flight.luggageCapacity = flightRegisterDTO.luggageCapacity;
-        flight.cost = flightRegisterDTO.cost;
 
-        try {
-            await this.flightRepository.save(flight);
-        } catch (error) {
-            throw new Error("Error: " + error);
-        }
+        await this.flightRepository.save(flight);
 
         const response: FlightRegisterSuccessDTO = {
             planeId: flight.plane.id,
@@ -49,7 +47,6 @@ export class FlightService {
             departureDate: flight.departureDate,
             arrivalDate: flight.arrivalDate,
             luggageCapacity: flight.luggageCapacity,
-            cost: flight.cost,
         };
 
         return response;
@@ -75,17 +72,16 @@ export class FlightService {
             throw new Error("Flight not found");
         }
 
-        let reassignedPlane: Plane;
         if (flightUpdateDTO.planeId) {
-            try {
-                reassignedPlane = await this.planeRepository.findOneBy({
-                    id: flightUpdateDTO.planeId,
-                });
-            } catch (error) {
-                throw new Error("Error: " + error);
+            const plane = await this.planeRepository.findOneBy({
+                id: flightUpdateDTO.planeId,
+            });
+
+            if (!plane) {
+                throw new Error("Plane not found");
             }
 
-            flight.plane = reassignedPlane;
+            flight.plane = plane;
         }
 
         if (flightUpdateDTO.origin) {
@@ -103,15 +99,8 @@ export class FlightService {
         if (flightUpdateDTO.luggageCapacity) {
             flight.luggageCapacity = flightUpdateDTO.luggageCapacity;
         }
-        if (flightUpdateDTO.cost) {
-            flight.cost = flightUpdateDTO.cost;
-        }
 
-        try {
-            await this.flightRepository.save(flight);
-        } catch (error) {
-            throw new Error("Error: " + error);
-        }
+        await this.flightRepository.save(flight);
 
         const response: FlightUpdateSuccessDTO = {
             planeId: flight.plane.id,
@@ -120,17 +109,12 @@ export class FlightService {
             departureDate: flight.departureDate,
             arrivalDate: flight.arrivalDate,
             luggageCapacity: flight.luggageCapacity,
-            cost: flight.cost,
         };
 
         return response;
     }
 
     async delete(id: number): Promise<DeleteResult> {
-        try {
-            return await this.flightRepository.delete(id);
-        } catch (error) {
-            throw new Error("Error: " + error);
-        }
+        return await this.flightRepository.delete(id);
     }
 }

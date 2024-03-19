@@ -6,5 +6,4 @@ export class FlightUpdateSuccessDTO {
     departureDate?: Date;
     arrivalDate?: Date;
     luggageCapacity?: number;
-    cost?: number;
 }

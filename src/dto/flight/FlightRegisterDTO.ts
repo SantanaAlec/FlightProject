@@ -6,5 +6,4 @@ export class FlightRegisterDTO {
     departureDate!: Date;
     arrivalDate!: Date;
     luggageCapacity!: number;
-    cost!: number;
 }

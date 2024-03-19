@@ -10,7 +10,6 @@ export enum State {
     CANCELLED = "CANCELLED"
 }
 
-
 @Entity()
 export class Reservation {
     @PrimaryGeneratedColumn()
@@ -30,6 +29,7 @@ export class Reservation {
     @JoinTable({ name: "reservation_seat" })
     seats: Seat[];
 
+    @Column()
     reservationDate: Date;
 
     @Column({

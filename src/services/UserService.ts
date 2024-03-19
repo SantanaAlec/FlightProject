@@ -21,11 +21,7 @@ export class UserService {
         user.password = UserRegisterDTO.password;
         user.phone = UserRegisterDTO.phone;
 
-        try {
-            await this.userRepository.save(user);
-        } catch (error) {
-            throw new Error("Error: " + error);
-        }
+        await this.userRepository.save(user);
 
         const response: UserRegisterSuccessDTO = {
             name: user.name,
@@ -71,11 +67,7 @@ export class UserService {
             user.phone = UserUpdateDTO.phone;
         }
 
-        try {
-            await this.userRepository.save(user);
-        } catch (error) {
-            throw new Error("Error: " + error);
-        }
+        await this.userRepository.save(user);
 
         const response: UserUpdateSuccessDTO = {
             name: user.name,
@@ -87,10 +79,6 @@ export class UserService {
     }
 
     async delete(id: number): Promise<DeleteResult> {
-        try {
-            return await this.userRepository.delete(id);
-        } catch (error) {
-            throw new Error("Error: " + error);
-        }
+        return await this.userRepository.delete(id);
     }
 }

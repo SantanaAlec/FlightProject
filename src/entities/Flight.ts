@@ -27,7 +27,4 @@ export class Flight {
 
     @Column()
     luggageCapacity: number;
-
-    @Column()
-    cost: number;
 }

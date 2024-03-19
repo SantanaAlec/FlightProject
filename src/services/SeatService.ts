@@ -10,8 +10,12 @@ export class SeatService {
     private seatRepository: Repository<Seat>;
     private planeRepository: Repository<Plane>;
 
-    constructor(seatRepository: Repository<Seat>) {
+    constructor(
+        seatRepository: Repository<Seat>,
+        planeRepository: Repository<Plane>
+    ) {
         this.seatRepository = seatRepository;
+        this.planeRepository = planeRepository;
     }
 
     async register(
@@ -19,25 +23,19 @@ export class SeatService {
     ): Promise<SeatRegisterSuccessDTO> {
         const seat = new Seat();
 
-        let assignedPlane: Plane;
-        try {
-            assignedPlane = await this.planeRepository.findOneBy({
-                id: seatRegisterDTO.planeId,
-            });
-        } catch (error) {
-            throw new Error("Error: " + error);
+        const plane = await this.planeRepository.findOneBy({
+            id: seatRegisterDTO.planeId,
+        });
+        if (!plane) {
+            throw new Error("Plane not found");
         }
+        seat.plane = plane;
 
-        seat.plane = assignedPlane;
         seat.number = seatRegisterDTO.number;
         seat.class = seatRegisterDTO.class;
         seat.price = seatRegisterDTO.price;
 
-        try {
-            await this.seatRepository.save(seat);
-        } catch (error) {
-            throw new Error("Error: " + error);
-        }
+        await this.seatRepository.save(seat);
 
         const response: SeatRegisterSuccessDTO = {
             planeId: seat.plane.id,
@@ -69,17 +67,14 @@ export class SeatService {
             throw new Error("Seat not found");
         }
 
-        let reassignedPlane: Plane;
         if (seatUpdateDTO.planeId) {
-            try {
-                reassignedPlane = await this.planeRepository.findOneBy({
-                    id: seatUpdateDTO.planeId,
-                });
-            } catch (error) {
-                throw new Error("Error: " + error);
+            const plane = await this.planeRepository.findOneBy({
+                id: seatUpdateDTO.planeId,
+            });
+            if (!plane) {
+                throw new Error("Plane not found");
             }
-
-            seat.plane = reassignedPlane;
+            seat.plane = plane;
         }
 
         if (seatUpdateDTO.number) {
@@ -92,11 +87,7 @@ export class SeatService {
             seat.price = seatUpdateDTO.price;
         }
 
-        try {
-            await this.seatRepository.save(seat);
-        } catch (error) {
-            throw new Error("Error: " + error);
-        }
+        await this.seatRepository.save(seat);
 
         const response: SeatUpdateSuccessDTO = {
             planeId: seat.plane.id,
@@ -109,10 +100,6 @@ export class SeatService {
     }
 
     async delete(id: number): Promise<DeleteResult> {
-        try {
-            return await this.seatRepository.delete(id);
-        } catch (error) {
-            throw new Error("Error: " + error);
-        }
+        return await this.seatRepository.delete(id);
     }
 }

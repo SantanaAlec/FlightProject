@@ -4,9 +4,9 @@ import { Reservation } from "./Reservation";
 
 
 export enum SeatClass {
-    BUSINESS = "BUSINESS",
-    ECONOMY = "ECONOMY",
-    FIRST = "FIRSTCLASS"
+    ADULT = "ADULT",
+    KID = "KID",
+    TOODLER = "TOODLER"
 }
 
 
@@ -27,7 +27,7 @@ export class Seat {
     @Column({
         type: "enum",
         enum: SeatClass,
-        default: SeatClass.BUSINESS,
+        default: SeatClass.ADULT,
     })
     class: SeatClass;
 

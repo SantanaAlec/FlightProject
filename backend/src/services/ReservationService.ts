@@ -87,6 +87,7 @@ export class ReservationService {
         //Create payment
         const payment = new Payment();
         //Let paysystem handle the payment
+        //Mejor harcodearlo a que tenga que pagar completamente el total
         payment.amount = reservationRegisterDTO.paymentData.amount;
         payment.paymentDate = reservationRegisterDTO.paymentData.paymentDate;
         payment.paymentMethod =
@@ -164,6 +165,7 @@ export class ReservationService {
                 reservation.seats.push(seat);
                 //Asigno los nuevos asientos pero no hace nada con los viejos
                 //Se podria limpiar la lista y cada asiento reasignarlo
+                //Front maneja el como se manejan los asientos
             }
         }
 
